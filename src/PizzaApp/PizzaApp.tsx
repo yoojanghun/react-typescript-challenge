@@ -7,6 +7,12 @@ type PizzaObj = {
     price: number;
 }
 
+type OrderQueue = {
+    id: number;
+    pizza: PizzaObj;
+    status: string;
+}
+
 function PizzaApp() {
 
     const menu = [
@@ -16,6 +22,14 @@ function PizzaApp() {
         { name: "Veggie", price: 9 },
     ]
 
+    let cashInRegister = 100;
+    const orderQueue: OrderQueue[] = [];
+    let nextOrderId = 1;
+
+    function addNewPizza(pizza: PizzaObj) {
+        menu.push(pizza);
+    }
+
     function placeOrderArr(pizzaName: string): PizzaObj[] {
         const selectedPizza = menu.filter(pizza => {
             return pizza.name === pizzaName;
@@ -24,14 +38,47 @@ function PizzaApp() {
     }
     console.log(placeOrderArr("Veggie"));
 
-    function placeOrder(pizzaName: string): PizzaObj | undefined {
+    function placeOrder(pizzaName: string) {
         const selectedPizza = menu.find(pizza => {
             return pizza.name === pizzaName;
         })
-        return selectedPizza;
+
+        // selectedPizza가 undefined일 수 있기 때문에
+        if(selectedPizza) {
+            cashInRegister += selectedPizza.price;
+            const newOrder: OrderQueue = {
+                id: nextOrderId, 
+                pizza: selectedPizza, 
+                status: "ordered"
+            };
+            nextOrderId += 1;
+            orderQueue.push(newOrder);
+            return newOrder;
+        }
+
+        return undefined;       // pizza가 없는 경우
     }
     console.log(placeOrder("Veggie"));
+    console.log(cashInRegister);
 
+    function completeOrder(orderId: number) {
+        const order = orderQueue.find(order => order.id === orderId);
+        if(order) {
+            order.status = "completed";
+        }
+        return undefined;
+    }
+
+    addNewPizza({ name: "Chicken Bacon Ranch", price: 12 });
+    addNewPizza({ name: "BBQ Chicken", price: 12 });
+    addNewPizza({ name: "Spicy Sausage", price: 11 });
+    console.log("Menu:", menu);
+    console.log("Cash in register:", cashInRegister);
+
+    placeOrder("BBQ Chicken");
+    completeOrder(2)
+
+    console.log("Order queue:", orderQueue);
 
     return(
         <h1>hello</h1>
