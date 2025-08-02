@@ -3,14 +3,14 @@
 // filter : 조건을 만족하는 모든 요소를 "배열로" 반환
 
 type PizzaObj = {
-    name: string;
-    price: number;
+    name: string,
+    price: number
 }
 
 type OrderQueue = {
-    id: number;
-    pizza: PizzaObj;
-    status: string;
+    id: number,
+    pizza: PizzaObj,
+    status: string
 }
 
 function PizzaApp() {
@@ -44,28 +44,27 @@ function PizzaApp() {
         })
 
         // selectedPizza가 undefined일 수 있기 때문에
-        if(selectedPizza) {
-            cashInRegister += selectedPizza.price;
-            const newOrder: OrderQueue = {
-                id: nextOrderId, 
-                pizza: selectedPizza, 
-                status: "ordered"
-            };
-            nextOrderId += 1;
-            orderQueue.push(newOrder);
-            return newOrder;
-        }
+        if(!selectedPizza) return
 
-        return undefined;       // pizza가 없는 경우
+        cashInRegister += selectedPizza.price;
+        const newOrder: OrderQueue = {
+            id: nextOrderId, 
+            pizza: selectedPizza, 
+            status: "ordered"
+        };
+        nextOrderId += 1;
+        orderQueue.push(newOrder);
+        return newOrder;
     }
     console.log(placeOrder("Veggie"));
     console.log(cashInRegister);
 
     function completeOrder(orderId: number) {
         const order = orderQueue.find(order => order.id === orderId);
-        if(order) {
-            order.status = "completed";
-        }
+        
+        if(!order) return;
+
+        order.status = "completed";
         return undefined;
     }
 
